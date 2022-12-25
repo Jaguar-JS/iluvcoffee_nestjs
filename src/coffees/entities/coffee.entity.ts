@@ -1,13 +1,17 @@
-export class Coffee {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
+import { Base } from "../../utils/base";
+import { Column, Entity, JoinTable, ManyToMany } from "typeorm";
+// import { FlavorEntity } from "./flavor.entity";
 
-  constructor(id: number, name: string, description: string, price: number) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.price = price;
-  }
+@Entity('Coffees')
+export class CoffeeEntity extends Base{
+  @Column({ default: '' })
+  name: string;
+  @Column({ nullable: true })
+  brand: string;
+  @Column()
+  price: number;
+  //
+  // @JoinTable()
+  // @ManyToMany(() => FlavorEntity, (flavor) => flavor.coffees, { cascade: true })
+  // flavors: FlavorEntity[];
 }

@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, NotFoundException } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpCode,
+  NotFoundException,
+  UsePipes, ValidationPipe
+} from "@nestjs/common";
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
@@ -7,8 +18,6 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
-
-
   @Get()
   findAll() {
 	return this.coffeesService.getCoffees();
@@ -16,10 +25,6 @@ export class CoffeesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-     const coffee = this.coffeesService.getCoffee(+id);
-    if (!coffee) {
-      throw new NotFoundException('Coffee Not found');
-    }
 	return this.coffeesService.getCoffee(+id);
   }
 
@@ -29,6 +34,7 @@ export class CoffeesController {
 	return this.coffeesService.createCoffee(createCoffeeDto);
   }
 
+  @UsePipes(new ValidationPipe())
   @Patch(':id')
   @HttpCode(200)
   update(@Param('id') id: string, @Body() updateCoffeeDto: UpdateCoffeeDto) {
