@@ -13,6 +13,6 @@ export const getTypeOrmConfig = async (
 	password: configService.get('POSTGRES_PASSWORD'),
 	autoLoadEntities: true,
 	synchronize: true,
-	logging: true,
+	logging: false,
   };
 };
