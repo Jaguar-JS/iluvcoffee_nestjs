@@ -1,46 +1,51 @@
-import { Injectable } from '@nestjs/common'
-import { Coffee } from './entities/coffee.entity'
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { CoffeeEntity } from './entities/coffee.entity'
 import { CreateCoffeeDto } from './dto/create-coffee.dto'
 import { UpdateCoffeeDto } from './dto/update-coffee.dto'
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class CoffeesService {
-  private coffees: Coffee[] = []
+  constructor(
+    @InjectRepository(CoffeeEntity)
+    private readonly coffeeRepository: Repository<CoffeeEntity>
+  ) {}
 
-  constructor() {
-    this.coffees.push(
-      new Coffee(1, 'Cappuccino', 'Frothy milky coffee', 7))
-    this.coffees.push(
-      new Coffee(2, 'Latte', 'Frothy milky coffee with milk', 10))
-    this.coffees.push(
-      new Coffee(3, 'Espresso', 'Short, strong coffee', 5))
-  }
 // All coffees
-  async getCoffees(): Promise<Coffee[]> {
-    return this.coffees
+  async getCoffees(): Promise<CoffeeEntity[]> {
+    return this.coffeeRepository.find()
   }
+
 //  by-id
-  async getCoffee(id: number): Promise<Coffee> {
-    return this.coffees.find((coffee) => coffee.id === +id)
-  }
-// add coffee
-  async createCoffee(createCoffeeDto: CreateCoffeeDto): Promise<Coffee> {
-    this.coffees.push({ ...createCoffeeDto, id: this.coffees.length + 1 })
-    const coffee = this.coffees[this.coffees.length - 1]
+  async getCoffee(id: number): Promise<CoffeeEntity> {
+    const coffee= await this.coffeeRepository.findOne({
+      where: {
+        id
+      },
+    })
+    if (!coffee) throw new NotFoundException('Coffee not found!')
     return coffee
   }
-// update coffee
-  async updateCoffee(id: number, updateCoffeeDto: UpdateCoffeeDto): Promise<Coffee> {
-    const index = this.coffees.findIndex((c) => c.id === +id)
-    const coffee = this.coffees[index]
-    this.coffees[index] = { ...coffee, ...updateCoffeeDto }
-    return this.coffees[index]
+
+// add coffee
+  async createCoffee(createCoffeeDto: CreateCoffeeDto): Promise<CoffeeEntity> {
+    const coffee =await this.coffeeRepository.create(createCoffeeDto);
+    return this.coffeeRepository.save(coffee);
   }
+
+// update coffee
+  async updateCoffee(id: number, updateCoffeeDto: UpdateCoffeeDto): Promise<CoffeeEntity> {
+    const coffee= await this.getCoffee(id)
+    return this.coffeeRepository.save({
+      ...coffee,
+      ...updateCoffeeDto
+    })
+  }
+
 // del coffee
-  async deleteCoffee(id: number): Promise<Coffee> {
-    const index = this.coffees.findIndex((c) => c.id === +id)
-    const deletedCoffee = this.coffees[index]
-    this.coffees.splice(index, 1)
-    return deletedCoffee
+  async deleteCoffee(id: number) {
+    const coffee= await this.getCoffee(id)
+    return this.coffeeRepository.remove(coffee)
   }
 }

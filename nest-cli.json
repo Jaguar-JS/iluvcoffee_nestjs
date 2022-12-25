@@ -1,5 +1,12 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "plugins": ["@nestjs/swagger/plugin"]
+  },
+  "entryFile": "app/main",
+  "generateOptions": {
+    "spec": false
+  },
   "sourceRoot": "src"
 }
