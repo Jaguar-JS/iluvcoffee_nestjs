@@ -8,19 +8,20 @@ import {
   Delete,
   HttpCode,
   NotFoundException,
-  UsePipes, ValidationPipe
+  UsePipes, ValidationPipe, Query
 } from "@nestjs/common";
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
+import { PaginationQueryDto } from "./dto/pagination-query.dto";
 
 @Controller('coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
   @Get()
-  findAll() {
-	return this.coffeesService.getCoffees();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+	return this.coffeesService.findAllCoffees(paginationQuery);
   }
 
   @Get(':id')

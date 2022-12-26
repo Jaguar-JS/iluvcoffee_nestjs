@@ -8,6 +8,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { FlavorEntity } from "./entities/flavor.entity";
 import isPostgresError from "../utils/isPostgresError";
+import { PaginationQueryDto } from "./dto/pagination-query.dto";
 
 @Injectable()
 export class CoffeesService {
@@ -20,13 +21,16 @@ export class CoffeesService {
   }
 
 // All coffees
-  async getCoffees(): Promise<CoffeeEntity[]> {
+  async   findAllCoffees(paginationQuery: PaginationQueryDto): Promise<CoffeeEntity[]> {
+    const { limit, offset } = paginationQuery
     return this.coffeeRepository.find(
       {
         order: {
           createdAt: 'ASC'
         },
-        relations: ['flavors']
+        relations: ['flavors'],
+        take: limit,
+        skip: offset,
       }
     )
   }
