@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 // import { AnyExceptionFilter } from '../common/filters/any-exception.filter';
@@ -10,7 +10,13 @@ function setupApp (app: INestApplication): INestApplication {
   // app.useGlobalPipes(new SmartValidationPipe());
   // app.useGlobalFilters(new AnyExceptionFilter(), new HttpExceptionFilter());
   // app.useGlobalInterceptors(new WrapResponseInterceptor());
-
+  app.useGlobalPipes(
+	new ValidationPipe({
+		whitelist: true,
+    forbidNonWhitelisted:true,
+		transform: true,
+	}),
+  )
   const options = new DocumentBuilder()
 	.setTitle('👁️❤️☕')
 	.setDescription('App about coffee')
