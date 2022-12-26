@@ -15,6 +15,10 @@ function setupApp (app: INestApplication): INestApplication {
 		whitelist: true,
     forbidNonWhitelisted:true,
 		transform: true,
+		transformOptions:{
+			// неявное преобразование типов на глобальном уровне
+			enableImplicitConversion:true
+		}
 	}),
   )
   const options = new DocumentBuilder()
