@@ -9,7 +9,6 @@ import { Repository } from "typeorm";
 import { FlavorEntity } from "./entities/flavor.entity";
 import isPostgresError from "../utils/isPostgresError";
 import { PaginationQueryDto } from "./dto/pagination-query.dto";
-import { match } from "assert";
 
 @Injectable()
 export class CoffeesService {
